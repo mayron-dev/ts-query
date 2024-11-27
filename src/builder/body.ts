@@ -1,6 +1,5 @@
-import { Query } from "../query";
-
-import { Builder } from "./builder";
+import { Query } from '../query';
+import { Builder } from './builder';
 
 export type Body = any
 
@@ -15,4 +14,5 @@ export class BodyBuilder extends Builder<Body> {
     this._value = v;
     return this;
   }
+
 }

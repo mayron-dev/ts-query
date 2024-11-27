@@ -1,10 +1,9 @@
-import { Query } from "../query";
+import { Query } from '../query';
 
 export abstract class Builder<T = any> {
   protected abstract _value: T;
 
-  constructor(protected _parent: Query) {}
-
-  getValue() { return this._value }
+  constructor(protected _parent: Query) { }
+  get value() { return this._value }
   back() { return this._parent }
 }

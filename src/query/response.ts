@@ -1,6 +1,11 @@
-export type Response<T = any> = {
+type ErrorResponse = {
+  status: number;
+  success: false;
+  error?: string | string[];
+}
+type SuccessResponse<T> = {
   data?: T;
   status: number;
-  error?: string | string[];
-  success: boolean;
+  success: true;
 }
+export type Response<T = any> = SuccessResponse<T> | ErrorResponse
