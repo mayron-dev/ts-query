@@ -1,5 +1,5 @@
-import { Query } from '../query';
-import { Builder } from './builder';
+import { RequestBuilder } from '../request';
+import { Builder } from './';
 
 type Order = {
   field: string;
@@ -29,21 +29,24 @@ export type Filter = {
 
 export class FilterBuilder extends Builder<Filter> {
   override _value: Filter = { limit: 0, offset: 0, order: [], where: [] };
-  constructor(_parent: Query) { super(_parent) }
-
-  order(order: Order | Order[]): this {
-    if (Array.isArray(order)) {
-      this._value.order?.push(...order)
-    } else {
-      this._value.order?.push(order)
-    }
-    return this;
-  }
+  constructor(_parent: RequestBuilder) { super(_parent) }
 
   limit(v: number): this {
+    if (v < 0) throw new Error("Limit must be non-negative");
     this._value.limit = v;
     return this;
   }
+
+  order(order: Order | Order[]): this {
+    const isValidOrder = (o: Order) => ["desc", "asc"].includes(o.type);
+    const orders = Array.isArray(order) ? order : [order];
+    for (const o of orders) {
+      if (!isValidOrder(o)) throw new Error(`Invalid order type: ${o.type}`);
+    }
+    this._value.order = [...(this._value.order || []), ...orders];
+    return this;
+  }
+
 
   offset(v: number): this {
     this._value.offset = v;

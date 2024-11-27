@@ -1,6 +1,6 @@
 {
   "name": "@mayron-dev/ts-query",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "private": false,
   "main": "dist/index.js",
