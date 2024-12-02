@@ -1,4 +1,4 @@
-import { Filter } from '../builder';
+import { Filter } from '../factory/filter';
 
 export const buildFilter = (filter: Filter) => {
   const params = new URLSearchParams()
