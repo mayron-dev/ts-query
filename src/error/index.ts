@@ -4,15 +4,11 @@ export enum ErrorType {
   ResponseValidation = "response-validation",
   Response = "response",
 }
-type ResponseSuccess = {
-  status: number;
-  data: any;
-  sucess: true;
-}
 
+export type ErrorData = { [key: string]: string | string[] | undefined } | string | string[];
 export class TsRequestError extends Error {
   errorType: ErrorType;
-  error: { [key: string]: string | string[] | undefined } | string | string[];
+  error: ErrorData;
   status?: number;
 
   constructor(

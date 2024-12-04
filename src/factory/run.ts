@@ -31,6 +31,14 @@ export const run = async <T>(req: HttpRequest): Promise<T> => {
       throw error;
     }
     if (error instanceof AxiosError) {
+      console.log(error.message);
+      if (error.message.includes("ECONNREFUSED")) {
+        throw new TsRequestError(
+          ErrorType.Response,
+          "Could not connect to server",
+          500
+        );
+      }
       throw new TsRequestError(
         ErrorType.Response,
         error.response?.data?.error || error.message,

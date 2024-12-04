@@ -6,7 +6,13 @@ import { run } from './run';
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 const buildPath = (basePath: string, path: string) => {
-  return basePath.endsWith("/") ? basePath + path : basePath + "/" + path;
+  if (basePath.endsWith("/")) {
+    basePath = basePath.substring(0, basePath.length - 1);
+  }
+  if (path.startsWith("/")) {
+    path = path.substring(1);
+  }
+  return `${basePath}/${path}`;
 }
 
 const internalGet = <T>(req: HttpRequest, path?: string) => {
