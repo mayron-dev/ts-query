@@ -31,7 +31,8 @@ export const http = <T>(basePath?: string) => {
 
   const req: HttpRequest = {
     path: base,
-    authorization: defaultAuthorization
+    authorization: defaultAuthorization,
+    contentType: 'application/json',
   }
   return {
     get: (path: string) => get<T>(req, path),
