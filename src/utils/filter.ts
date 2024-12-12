@@ -28,5 +28,6 @@ export const buildFilter = (filter: Filter) => {
       );
     });
   }
-  return params.toString();
+
+  return decodeURIComponent(params.toString());
 }

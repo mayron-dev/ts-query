@@ -6,32 +6,29 @@ import { HttpRequest } from './';
 
 export const run = async <T>(req: HttpRequest): Promise<T> => {
   try {
+    const params = req.filter ? buildFilter(req.filter) : "";
+
     const response = await axios.request({
       method: req.method,
-      url: req.path,
+      url: `${req.path}?${params}`,
       data: req.body,
-      params: req.filter ? buildFilter(req.filter) : undefined,
       signal: req.abortSignal,
       headers: {
         "Content-Type": req.contentType,
-        Authorization: req.authorization
-      }
+        Authorization: req.authorization,
+      },
+      withCredentials: true
     });
 
     if (req.validateResponse) {
       const res = req.validateResponse(response.data);
-      if (res) {
-        throw new TsRequestError(ErrorType.ResponseValidation, res);
-      }
+      if (res) throw new TsRequestError(ErrorType.ResponseValidation, res);
       return response.data;
     }
     return response.data;
   } catch (error) {
-    if (error instanceof TsRequestError) {
-      throw error;
-    }
+    if (error instanceof TsRequestError) throw error;
     if (error instanceof AxiosError) {
-      console.log(error.message);
       if (error.message.includes("ECONNREFUSED")) {
         throw new TsRequestError(
           ErrorType.Response,
@@ -45,6 +42,7 @@ export const run = async <T>(req: HttpRequest): Promise<T> => {
         error.response?.status || 400
       );
     }
+
     throw new TsRequestError(ErrorType.Response, (error as any).message, 400);
   }
 }
