@@ -12,27 +12,39 @@ export type HttpRequest = {
   contentType?: string;
   validateResponse?: (data: any) => { [key: string]: string | string[] | undefined } | undefined;
   abortSignal?: AbortSignal;
+  runner: QueryRunner;
+}
+export type HttpRequestOptions = {
+  path: string;
+  method: HttpMethod;
+  headers: { [key: string]: string };
+  body?: { [key: string]: any };
+  abortSignal?: AbortSignal;
+}
+type QueryRunnerResult<T = any> = {
+  data: T;
+  status: number;
 }
 
-let defaultBasePath: string;
+export type QueryRunner<T = any> = (req: HttpRequestOptions) => Promise<QueryRunnerResult<T>>;
 
-export const setDefaultBasePath = (path: string) => defaultBasePath = path;
-
-
-let defaultAuthorization: string;
-
-export const setDefaultAuthorization = (authorization: string) => defaultAuthorization = authorization;
-
-export const http = <T>(basePath?: string) => {
-  const base = basePath ?? defaultBasePath;
-  if (!base) {
+type HttpParams<T = any> = {
+  basePath: string;
+  authorization?: string;
+  contentType?: string;
+  runner: QueryRunner<T>;
+}
+export const http = <T>({ basePath, runner, authorization, contentType }: HttpParams<T>) => {
+  const path = basePath;
+  if (!path) {
     throw new TsRequestError(ErrorType.Build, "base path is required");
   }
 
   const req: HttpRequest = {
-    path: base,
-    authorization: defaultAuthorization,
-    contentType: 'application/json',
+    path,
+    authorization,
+    contentType: contentType ?? 'application/json',
+    runner,
   }
   return {
     get: (path: string) => get<T>(req, path),
