@@ -2,6 +2,7 @@ import { HttpRequest } from './';
 import { BodyValidator } from './body';
 import { Filter } from './filter';
 import { run } from './run';
+import { url, UrlOptions } from './url';
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -16,7 +17,7 @@ const buildPath = (basePath: string, path: string) => {
 }
 
 const internalGet = <T>(req: HttpRequest, path?: string) => {
-  req.path = !!path ? buildPath(req.path, path) : req.path;
+  req.path = path ? buildPath(req.path, path) : req.path;
   req.method = "GET";
 
   return {
@@ -36,10 +37,7 @@ const internalGet = <T>(req: HttpRequest, path?: string) => {
       req.contentType = contentType;
       return internalGet<T>(req, undefined);
     },
-    authorization: (authorization: string) => {
-      req.authorization = authorization;
-      return internalGet<T>(req, undefined);
-    },
+    url: (opts?: UrlOptions) => url(req, opts),
     run: () => run<T>(req),
   }
 }
@@ -47,7 +45,7 @@ export const get = <T>(req: HttpRequest, path?: string) => internalGet<T>(req, p
 
 
 const internalPost = <T>(req: HttpRequest, path?: string) => {
-  req.path = !!path ? buildPath(req.path, path) : req.path;
+  req.path = path ? buildPath(req.path, path) : req.path;
   req.method = "POST";
   return {
     abortSignal: (signal: AbortSignal) => {
@@ -66,14 +64,11 @@ const internalPost = <T>(req: HttpRequest, path?: string) => {
       req.contentType = contentType;
       return internalPost<T>(req, undefined);
     },
-    authorization: (authorization: string) => {
-      req.authorization = authorization;
-      return internalPost<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
       return internalPost<T>(req, undefined);
     },
+    url: (opts?: UrlOptions) => url(req, opts),
     run: () => run<T>(req),
   }
 }
@@ -81,7 +76,7 @@ export const post = <T>(req: HttpRequest, path?: string) => internalPost<T>(req,
 
 
 const internalPut = <T>(req: HttpRequest, path?: string) => {
-  req.path = !!path ? buildPath(req.path, path) : req.path;
+  req.path = path ? buildPath(req.path, path) : req.path;
   req.method = "PUT";
   return {
     abortSignal: (signal: AbortSignal) => {
@@ -100,14 +95,11 @@ const internalPut = <T>(req: HttpRequest, path?: string) => {
       req.contentType = contentType;
       return internalPut<T>(req, undefined);
     },
-    authorization: (authorization: string) => {
-      req.authorization = authorization;
-      return internalPut<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
       return internalPut<T>(req, undefined);
     },
+    url: (opts?: UrlOptions) => url(req, opts),
     run: () => run<T>(req),
   }
 }
@@ -115,7 +107,7 @@ export const put = <T>(req: HttpRequest, path?: string) => internalPut<T>(req, p
 
 
 const internalPatch = <T>(req: HttpRequest, path?: string) => {
-  req.path = !!path ? buildPath(req.path, path) : req.path;
+  req.path = path ? buildPath(req.path, path) : req.path;
   req.method = "PATCH";
   return {
     abortSignal: (signal: AbortSignal) => {
@@ -134,14 +126,11 @@ const internalPatch = <T>(req: HttpRequest, path?: string) => {
       req.contentType = contentType;
       return internalPatch<T>(req, undefined);
     },
-    authorization: (authorization: string) => {
-      req.authorization = authorization;
-      return internalPatch<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
       return internalPatch<T>(req, undefined);
     },
+    url: (opts?: UrlOptions) => url(req, opts),
     run: () => run<T>(req),
   }
 }
@@ -149,7 +138,7 @@ export const patch = <T>(req: HttpRequest, path?: string) => internalPatch<T>(re
 
 
 const internalDelete = <T>(req: HttpRequest, path?: string) => {
-  req.path = !!path ? buildPath(req.path, path) : req.path;
+  req.path = path ? buildPath(req.path, path) : req.path;
   req.method = "DELETE";
   return {
     abortSignal: (signal: AbortSignal) => {
@@ -168,14 +157,11 @@ const internalDelete = <T>(req: HttpRequest, path?: string) => {
       req.contentType = contentType;
       return internalDelete<T>(req, undefined);
     },
-    authorization: (authorization: string) => {
-      req.authorization = authorization;
-      return internalDelete<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
       return internalDelete<T>(req, undefined);
     },
+    url: (opts?: UrlOptions) => url(req, opts),
     run: () => run<T>(req),
   }
 }

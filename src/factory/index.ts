@@ -1,4 +1,3 @@
-import { ErrorType, TsRequestError } from '../error';
 import { body, Body } from './body';
 import { filter, Filter } from './filter';
 import { del, get, HttpMethod, patch, post, put } from './methods';
@@ -8,9 +7,8 @@ export type HttpRequest = {
   method?: HttpMethod;
   body?: Body;
   filter?: Filter;
-  authorization?: string;
   contentType?: string;
-  validateResponse?: (data: any) => { [key: string]: string | string[] | undefined } | undefined;
+  validateResponse?: (data: unknown) => { [key: string]: string | string[] | undefined } | undefined;
   abortSignal?: AbortSignal;
   runner: QueryRunner;
 }
@@ -18,7 +16,7 @@ export type HttpRequestOptions = {
   path: string;
   method: HttpMethod;
   headers: { [key: string]: string };
-  body?: { [key: string]: any };
+  body?: any;
   abortSignal?: AbortSignal;
 }
 type QueryRunnerResult<T = any> = {
@@ -28,21 +26,14 @@ type QueryRunnerResult<T = any> = {
 
 export type QueryRunner<T = any> = (req: HttpRequestOptions) => Promise<QueryRunnerResult<T>>;
 
-type HttpParams<T = any> = {
+export type HttpOptions<T = any> = {
   basePath: string;
-  authorization?: string;
   contentType?: string;
   runner: QueryRunner<T>;
 }
-export const http = <T>({ basePath, runner, authorization, contentType }: HttpParams<T>) => {
-  const path = basePath;
-  if (!path) {
-    throw new TsRequestError(ErrorType.Build, "base path is required");
-  }
-
+export const http = <T>({ basePath, runner, contentType }: HttpOptions<T>) => {
   const req: HttpRequest = {
-    path,
-    authorization,
+    path: basePath,
     contentType: contentType ?? 'application/json',
     runner,
   }

@@ -6,13 +6,12 @@ export const run = async <T = any>(req: HttpRequest, runner?: QueryRunner<T>): P
   try {
     const params = req.filter ? buildFilter(req.filter) : "";
     const options: HttpRequestOptions = {
-      path: `${req.path}${params}`,
+      path: `${req.path}${params.length ? "?" + params : ''}`,
       method: req.method ?? 'GET',
       abortSignal: req.abortSignal,
       body: req.body,
       headers: {
         'Content-Type': req.contentType ?? 'application/json',
-        Authorization: req.authorization ?? '',
       }
     }
     const response = runner ? await runner(options) : await req.runner(options);
