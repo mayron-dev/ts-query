@@ -33,8 +33,12 @@ const internalGet = <T>(req: HttpRequest, path?: string) => {
       req.validateResponse = validator;
       return internalGet<T>(req, undefined);
     },
-    contentType: (contentType: string) => {
-      req.contentType = contentType;
+    headers: (value: { [key: string]: string }) => {
+      req.headers = value;
+      return internalGet<T>(req, undefined);
+    },
+    header: (key: string, value: string) => {
+      req.headers = { ...req.headers, [key]: value };
       return internalGet<T>(req, undefined);
     },
     url: (opts?: UrlOptions) => url(req, opts),
@@ -60,12 +64,16 @@ const internalPost = <T>(req: HttpRequest, path?: string) => {
       req.validateResponse = validator;
       return internalPost<T>(req, undefined);
     },
-    contentType: (contentType: string) => {
-      req.contentType = contentType;
-      return internalPost<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
+      return internalPost<T>(req, undefined);
+    },
+    headers: (value: { [key: string]: string }) => {
+      req.headers = value;
+      return internalPost<T>(req, undefined);
+    },
+    header: (key: string, value: string) => {
+      req.headers = { ...req.headers, [key]: value };
       return internalPost<T>(req, undefined);
     },
     url: (opts?: UrlOptions) => url(req, opts),
@@ -91,12 +99,16 @@ const internalPut = <T>(req: HttpRequest, path?: string) => {
       req.validateResponse = validator;
       return internalPut<T>(req, undefined);
     },
-    contentType: (contentType: string) => {
-      req.contentType = contentType;
-      return internalPut<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
+      return internalPut<T>(req, undefined);
+    },
+    headers: (value: { [key: string]: string }) => {
+      req.headers = value;
+      return internalPut<T>(req, undefined);
+    },
+    header: (key: string, value: string) => {
+      req.headers = { ...req.headers, [key]: value };
       return internalPut<T>(req, undefined);
     },
     url: (opts?: UrlOptions) => url(req, opts),
@@ -122,12 +134,16 @@ const internalPatch = <T>(req: HttpRequest, path?: string) => {
       req.validateResponse = validator;
       return internalPatch<T>(req, undefined);
     },
-    contentType: (contentType: string) => {
-      req.contentType = contentType;
-      return internalPatch<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
+      return internalPatch<T>(req, undefined);
+    },
+    headers: (value: { [key: string]: string }) => {
+      req.headers = value;
+      return internalPatch<T>(req, undefined);
+    },
+    header: (key: string, value: string) => {
+      req.headers = { ...req.headers, [key]: value };
       return internalPatch<T>(req, undefined);
     },
     url: (opts?: UrlOptions) => url(req, opts),
@@ -153,12 +169,16 @@ const internalDelete = <T>(req: HttpRequest, path?: string) => {
       req.validateResponse = validator;
       return internalDelete<T>(req, undefined);
     },
-    contentType: (contentType: string) => {
-      req.contentType = contentType;
-      return internalDelete<T>(req, undefined);
-    },
     body: (value: any) => {
       req.body = value;
+      return internalDelete<T>(req, undefined);
+    },
+    headers: (value: { [key: string]: string }) => {
+      req.headers = value;
+      return internalDelete<T>(req, undefined);
+    },
+    header: (key: string, value: string) => {
+      req.headers = { ...req.headers, [key]: value };
       return internalDelete<T>(req, undefined);
     },
     url: (opts?: UrlOptions) => url(req, opts),

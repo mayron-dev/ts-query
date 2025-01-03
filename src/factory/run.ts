@@ -11,7 +11,7 @@ export const run = async <T = any>(req: HttpRequest, runner?: QueryRunner<T>): P
       abortSignal: req.abortSignal,
       body: req.body,
       headers: {
-        'Content-Type': req.contentType ?? 'application/json',
+        ...req.headers,
       }
     }
     const response = runner ? await runner(options) : await req.runner(options);

@@ -7,7 +7,7 @@ export type HttpRequest = {
   method?: HttpMethod;
   body?: Body;
   filter?: Filter;
-  contentType?: string;
+  headers?: { [key: string]: string };
   validateResponse?: (data: unknown) => { [key: string]: string | string[] | undefined } | undefined;
   abortSignal?: AbortSignal;
   runner: QueryRunner;
@@ -28,13 +28,11 @@ export type QueryRunner<T = any> = (req: HttpRequestOptions) => Promise<QueryRun
 
 export type HttpOptions<T = any> = {
   basePath: string;
-  contentType?: string;
   runner: QueryRunner<T>;
 }
-export const http = <T>({ basePath, runner, contentType }: HttpOptions<T>) => {
+export const http = <T>({ basePath, runner }: HttpOptions<T>) => {
   const req: HttpRequest = {
     path: basePath,
-    contentType: contentType ?? 'application/json',
     runner,
   }
   return {
