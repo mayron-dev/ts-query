@@ -19,9 +19,14 @@ export type HttpRequestOptions = {
   body?: any;
   abortSignal?: AbortSignal;
 }
-type QueryRunnerResult<T = any> = {
+export type QueryRunnerResult<T = any> = {
   data: T;
   status: number;
+  headers: Headers;
+  statusText: string;
+  type: ResponseType;
+  url: string;
+  redirected: boolean;
 }
 
 export type QueryRunner<T = any> = (req: HttpRequestOptions) => Promise<QueryRunnerResult<T>>;

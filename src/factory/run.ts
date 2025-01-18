@@ -1,8 +1,8 @@
 import { ErrorType, TsRequestError } from '../error';
 import { buildFilter } from '../utils';
-import { HttpRequest, HttpRequestOptions, QueryRunner } from './';
+import { HttpRequest, HttpRequestOptions, QueryRunner, QueryRunnerResult } from './';
 
-export const run = async <T = any>(req: HttpRequest, runner?: QueryRunner<T>): Promise<T> => {
+export const run = async <T = any>(req: HttpRequest, runner?: QueryRunner<T>): Promise<QueryRunnerResult<T>> => {
   try {
     const params = req.filter ? buildFilter(req.filter) : "";
     const options: HttpRequestOptions = {
@@ -18,9 +18,9 @@ export const run = async <T = any>(req: HttpRequest, runner?: QueryRunner<T>): P
     if (req.validateResponse) {
       const res = req.validateResponse(response.data);
       if (res) throw new TsRequestError(ErrorType.ResponseValidation, res);
-      return response.data;
+      return response;
     }
-    return response.data;
+    return response;
   } catch (error) {
     if (error instanceof TsRequestError) throw error;
 
