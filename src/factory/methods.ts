@@ -15,18 +15,26 @@ const buildPath = (basePath: string, path: string) => {
   }
   return `${basePath}/${path}`;
 }
-type InternalRequestBuilder<T> = {
+export type InternalRequestBuilder<T> = {
+  abortSignal: (signal: AbortSignal) => InternalRequestBuilder<T>;
+  filter: (filter: Filter) => InternalRequestBuilder<T>;
+  validateResponse: (validator: BodyValidator) => InternalRequestBuilder<T>;
+  headers: (value: { [key: string]: string }) => InternalRequestBuilder<T>;
+  header: (key: string, value: string) => InternalRequestBuilder<T>;
+  body: (value: any) => InternalRequestBuilder<T>;
+  url: (opts?: UrlOptions) => string;
+  run: () => Promise<QueryRunnerResult<T>>;
+};
+
+export type InternalGetRequestBuilder<T> = {
   abortSignal: (signal: AbortSignal) => InternalGetRequestBuilder<T>;
   filter: (filter: Filter) => InternalGetRequestBuilder<T>;
   validateResponse: (validator: BodyValidator) => InternalGetRequestBuilder<T>;
   headers: (value: { [key: string]: string }) => InternalGetRequestBuilder<T>;
   header: (key: string, value: string) => InternalGetRequestBuilder<T>;
-  body: (value: any) => InternalGetRequestBuilder<T>;
   url: (opts?: UrlOptions) => string;
   run: () => Promise<QueryRunnerResult<T>>;
 };
-
-type InternalGetRequestBuilder<T> = Omit<InternalRequestBuilder<T>, "body">
 const internalGet = <T>(req: HttpRequest, path?: string): InternalGetRequestBuilder<T> => {
   req.path = path ? buildPath(req.path, path) : req.path;
   req.method = "GET";
@@ -92,7 +100,6 @@ const internalPost = <T>(req: HttpRequest, path?: string): InternalRequestBuilde
 }
 export const post = <T>(req: HttpRequest, path?: string): InternalRequestBuilder<T> => internalPost<T>(req, path);
 
-
 const internalPut = <T>(req: HttpRequest, path?: string): InternalRequestBuilder<T> => {
   req.path = path ? buildPath(req.path, path) : req.path;
   req.method = "PUT";
@@ -126,7 +133,6 @@ const internalPut = <T>(req: HttpRequest, path?: string): InternalRequestBuilder
   }
 }
 export const put = <T>(req: HttpRequest, path?: string): InternalRequestBuilder<T> => internalPut<T>(req, path);
-
 
 const internalPatch = <T>(req: HttpRequest, path?: string): InternalRequestBuilder<T> => {
   req.path = path ? buildPath(req.path, path) : req.path;
