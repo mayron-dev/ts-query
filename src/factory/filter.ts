@@ -25,10 +25,17 @@ export type Filter = {
   where?: Where<any>[];
 }
 
-const internalFilter = (oldValue?: Filter) => {
+type FilterBuilder = {
+  order: (order: Order | Order[]) => FilterBuilder;
+  limit: (v: number) => FilterBuilder;
+  offset: (v: number) => FilterBuilder;
+  where: (where: Where<any> | Where<any>[]) => FilterBuilder;
+  build: () => Filter
+}
+const internalFilter = (oldValue?: Filter): FilterBuilder => {
   const value = oldValue ?? {} as Filter;
   return {
-    order: (order: Order | Order[]) => {
+    order: (order: Order | Order[]): FilterBuilder => {
       const isValidOrder = (o: Order) => ["desc", "asc"].includes(o.type);
       const orders = Array.isArray(order) ? order : [order];
       for (const o of orders) {
@@ -37,21 +44,21 @@ const internalFilter = (oldValue?: Filter) => {
       value.order = [...(value.order || []), ...orders];
       return internalFilter(value);
     },
-    limit: (v: number) => {
+    limit: (v: number): FilterBuilder => {
       if (v < 0) throw new Error("Limit must be non-negative");
       value.limit = v;
       return internalFilter(value);
     },
-    offset: (v: number) => {
+    offset: (v: number): FilterBuilder => {
       if (v < 0) throw new Error("Offset must be non-negative");
       value.offset = v;
       return internalFilter(value);
     },
-    where: (where: Where<any> | Where<any>[]) => {
+    where: (where: Where<any> | Where<any>[]): FilterBuilder => {
       value.where = [...(value.where || []), ...Array.isArray(where) ? where : [where]];
       return internalFilter(value);
     },
-    build: () => value
+    build: (): Filter => value
   }
 }
 
